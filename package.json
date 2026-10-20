@@ -1,0 +1,18 @@
+{
+  "name": "knights-of-the-sky",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "A browser remake inspired by MicroProse's Knights of the Sky (1990) - WWI air combat on the Western Front.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "three": "0.169.0"
+  },
+  "devDependencies": {
+    "vite": "5.4.10"
+  }
+}
