@@ -4,6 +4,10 @@ A fan-made, from-scratch browser remake inspired by **MicroProse's _Knights of t
 
 > **Status: playable alpha.** Career, Quick Dogfight and Training Flight all work end to end. Balance and polish are ongoing.
 
+## Play online
+
+**▶ [robertorenz.github.io/KOTS](https://robertorenz.github.io/KOTS/)**. Every push to `main` deploys automatically through GitHub Actions (`.github/workflows/deploy.yml`).
+
 ## Running it
 
 ```bash
