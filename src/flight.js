@@ -121,7 +121,9 @@ export class FlightModel {
 
     // ---- rotation ----
     const eff = clamp(V / (s.vstall * 1.5), 0.08, 1) * this.controlHealth;
-    const trimCL = V > 1 ? clamp((s.mass * G) / (this.kL * q), 0, 0.8) : 0;
+    // auto-trim: hold 1 g, but never trim slower than 1.35 x stall (positive speed stability)
+    const vTrim = Math.max(V, s.vstall * 1.35);
+    const trimCL = V > 1 ? clamp((s.mass * G) / (this.kL * vTrim * vTrim), 0, 0.8) : 0;
     const alphaTrim = trimCL * as * smoothstep(-0.2, 0.3, u.y);
     const stab = 2.5 * clamp(V / (s.vstall * 2), 0.2, 1.6);
     const stallFx = this.stalled && !this.easy ? 0.55 : 1;
@@ -132,7 +134,9 @@ export class FlightModel {
       const room = clamp((as * 0.92 - a) / 0.08, 0, 1);
       pitchCmd *= room;
     }
-    const tp = pitchCmd * s.pitch * DEG * eff * stallFx - stab * (a - alphaTrim);
+    // elevator authority falls off with dynamic pressure at low speed (mushy controls near the stall)
+    const effP = Math.min(eff, clamp((V / (s.vstall * 1.6)) ** 2, 0.08, 1) * this.controlHealth);
+    const tp = pitchCmd * s.pitch * DEG * effP * stallFx - stab * (a - alphaTrim);
     const ty = -this.controls.yaw * s.yaw * DEG * eff - stab * 1.2 * this.beta;
     let tr = -this.controls.roll * s.roll * DEG * eff;
     if (this.stalled && !this.easy) {

@@ -126,14 +126,30 @@ export function buildAircraft(spec, scheme) {
   const wingMat = scheme.wingTop;
   const wings = [];
   const stagger = md.negStagger ? 0.35 : -0.3;
-  const addWing = (span, chord, y, z, upperMarks, lowerMarks) => {
+  const addWing = (span, chord, y, z, upperMarks, lowerMarks, cutout = 0) => {
     const w = new THREE.Group();
     w.position.set(0, y, z);
-    const top = new THREE.Mesh(new THREE.BoxGeometry(span, 0.07, chord), mat(wingMat));
-    w.add(top);
-    const under = new THREE.Mesh(new THREE.PlaneGeometry(span * 0.995, chord * 0.98).rotateX(Math.PI / 2), mat(scheme.wingBottom));
-    under.position.y = -0.04;
-    w.add(under);
+    if (cutout > 0) {
+      // centre-section cut-out over the cockpit, as on the Camel and S.E.5a
+      const half = (span - cutout) / 2;
+      for (const sx of [-1, 1]) {
+        const top = new THREE.Mesh(new THREE.BoxGeometry(half, 0.07, chord), mat(wingMat));
+        top.position.x = sx * (cutout / 2 + half / 2);
+        w.add(top);
+        const under = new THREE.Mesh(new THREE.PlaneGeometry(half * 0.995, chord * 0.98).rotateX(Math.PI / 2), mat(scheme.wingBottom));
+        under.position.set(sx * (cutout / 2 + half / 2), -0.04, 0);
+        w.add(under);
+      }
+      const front = new THREE.Mesh(new THREE.BoxGeometry(cutout, 0.07, chord * 0.16), mat(wingMat));
+      front.position.z = -chord * 0.42;
+      w.add(front);
+    } else {
+      const top = new THREE.Mesh(new THREE.BoxGeometry(span, 0.07, chord), mat(wingMat));
+      w.add(top);
+      const under = new THREE.Mesh(new THREE.PlaneGeometry(span * 0.995, chord * 0.98).rotateX(Math.PI / 2), mat(scheme.wingBottom));
+      under.position.y = -0.04;
+      w.add(under);
+    }
     const r = Math.min(chord * 0.42, 0.75);
     for (const sx of [-1, 1]) {
       if (upperMarks) { const m = marking(scheme.marking, r); m.position.set(sx * span * 0.36, 0.045, 0); w.add(m); }
@@ -155,7 +171,7 @@ export function buildAircraft(spec, scheme) {
     upperY = 1.05;
   } else {
     const lowerChord = md.wings === 'sesqui' ? C * 0.55 : C;
-    addWing(S, C, 1.25, stagger, true, false);
+    addWing(S, C, 1.25, stagger, true, false, 1.3);
     addWing(md.wings === 'sesqui' ? S * 0.86 : S * 0.95, lowerChord, -0.45, 0.05, false, true);
   }
 
@@ -222,7 +238,7 @@ export function buildAircraft(spec, scheme) {
   }
 
   // ---- crew ----
-  const eye = new THREE.Vector3(0, 0.78, stagger + C * 0.5 + 0.55);
+  const eye = new THREE.Vector3(0, 0.82, stagger + C * 0.5 + 0.85);
   const head = new THREE.Mesh(new THREE.SphereGeometry(0.2, 6, 5), mat('#5a3b24'));
   head.position.set(0, 0.62, eye.z);
   group.add(head); hidden.push(head);

@@ -2,7 +2,7 @@
 
 A fan-made, from-scratch browser remake inspired by **MicroProse's _Knights of the Sky_** (1990 DOS, 1991 Amiga). It is WWI air combat over the trenches of the Western Front: flat-shaded 3D polygons, a period cockpit, gun jams, archie, observation balloons, and a career mode in which you chase the Red Baron and the other German aces for the title of "Ace of Aces".
 
-> **Status: early development.** The flight model, the world and the aircraft models are being built. The playable loop (dogfights, missions, career) is in progress.
+> **Status: playable alpha.** Career, Quick Dogfight and Training Flight all work end to end. Balance and polish are ongoing.
 
 ## Running it
 
@@ -14,7 +14,7 @@ npm run build      # production build into dist/
 
 It needs a modern desktop browser with WebGL2. It uses Three.js and Vite. All sound is synthesised in the browser, so there are no asset downloads.
 
-## Planned features
+## Features
 
 - **Flight model.** Lift, drag, stalls and energy bleed in hard turns. Every aircraft type has its own mass, speed, climb and roll rate.
 - **Aircraft from 1916 to 1918:**
@@ -33,7 +33,7 @@ It needs a modern desktop browser with WebGL2. It uses Three.js and Vite. All so
 - **Quick Dogfight and Training Flight** modes.
 - **Controls.** Keyboard, plus gamepad support.
 
-## Controls (planned defaults)
+## Controls
 
 | Action | Keys |
 |---|---|
@@ -46,6 +46,32 @@ It needs a modern desktop browser with WebGL2. It uses Three.js and Vite. All so
 | Drop bomb | `B` |
 | Cycle view / padlock / look back | `V` / `F` / hold `R` |
 | Map / pause / time compression | `M` / `P` / `T` |
+| Pause menu, end flight | `Esc` |
+| Help (controls) | `H` |
+| Gamepad | Left stick: fly. Right stick: rudder. A or RT: fire. X: clear jam. Y: view. D-pad: throttle |
+
+## How to play
+
+- **Career.** Enlist a British, French or American pilot. Pick an aircraft in the squadron office, read the briefing and take off. Complete the objective, then get back over the trenches to the west and land at an aerodrome, or press `Esc` → *End flight*. Coming down on the German side means capture.
+- **Landing.** Throttle back and glide in at roughly 1.3× stall speed. Touch down gently, with the wings level and a sink rate below about 4.5 m/s.
+- **Gunnery.** Get close, under 200 m. The guns jam if you hold the trigger too long; tap `J` to clear them.
+- **Realism.** Options can switch on unlimited ammo, no jams, invulnerability, easy flight and easy landings. Each one reduces your career score multiplier.
+
+## Project layout
+
+| File | Purpose |
+|---|---|
+| `src/flight.js` | Flight model: lift and drag, stall, auto-trim, ground handling |
+| `src/world.js` | Terrain, front line, trenches, towns, aerodromes, clouds, map rendering |
+| `src/models.js` | Procedural low-poly aircraft, balloons and structures |
+| `src/entities.js` | Aircraft, balloons, ground targets, AA guns, damage model |
+| `src/ai.js` | AI pilots: pursuit with lead, evasion, formation, routes |
+| `src/weapons.js` | Bullets, tracers and bombs |
+| `src/mission.js` | Mission generation and objectives |
+| `src/campaign.js` | Career, aces, promotions, medals and the moving front |
+| `src/hud.js` | Cockpit instrument panel, gunsight, map overlay |
+| `src/ui.js` | Menus, briefing, debriefing and modal dialogs |
+| `src/main.js` | Game loop, cameras and flight flow |
 
 ## About the original game
 
